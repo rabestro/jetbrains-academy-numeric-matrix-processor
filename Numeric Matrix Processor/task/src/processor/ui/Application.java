@@ -1,6 +1,6 @@
 package processor.ui;
 
-import processor.matrix.Matrix;
+import processor.matrix.MatrixImpl;
 import processor.matrix.Transposition;
 
 import java.util.Scanner;
@@ -43,8 +43,8 @@ public final class Application {
         print(matrix.inverse().orElseThrow());
     }
 
-    private Matrix readMatrix(String name) {
-        System.out.println("Enter size of " + name + " matrix:");
+    private MatrixImpl readMatrix(String name) {
+        System.out.println("Enter size (rows and cols) of " + name + " matrix:");
         final var rows = scanner.nextInt();
         final var cols = scanner.nextInt();
 
@@ -54,7 +54,7 @@ public final class Application {
                 .limit(rows * cols)
                 .toArray();
 
-        return new Matrix(rows, cols, cells);
+        return new MatrixImpl(rows, cols, cells);
     }
 
     private void print(Object result) {

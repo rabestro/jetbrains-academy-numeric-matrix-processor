@@ -461,13 +461,16 @@ files:
 - name: src/processor/matrix/Transposition.java
   visible: true
   learner_created: true
-- name: src/processor/matrix/Matrix.java
-  visible: true
-  learner_created: true
 - name: src/processor/ui/Application.java
   visible: true
   learner_created: true
 - name: src/processor/Main.java
+  visible: true
+  learner_created: true
+- name: src/processor/matrix/MatrixImpl.java
+  visible: true
+  learner_created: true
+- name: src/processor/matrix/Matrix.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/projects/60/stages/328/implement#comment

@@ -60,12 +60,12 @@ public final class MatrixImpl implements Matrix {
     }
 
     @Override
-    public int getRows() {
+    public int rows() {
         return rows;
     }
 
     @Override
-    public int getCols() {
+    public int cols() {
         return cols;
     }
 

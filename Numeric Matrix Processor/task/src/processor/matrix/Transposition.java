@@ -1,29 +1,23 @@
 package processor.matrix;
 
+import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
+import java.util.function.IntUnaryOperator;
 
 public enum Transposition {
-    MAIN {
-        @Override
-        IntToDoubleFunction getFormula(final Matrix m) {
-            return i -> m.element(i / m.getRows() + i % m.getCols() * m.getCols());
-        }
-    }, SIDE {
-        @Override
-        IntToDoubleFunction getFormula(final Matrix m) {
-            return i -> m.element(m.getCols() * (m.getRows() - i % m.getCols()) - i / m.getRows() - 1);
-        }
-    }, VERTICAL {
-        @Override
-        IntToDoubleFunction getFormula(final Matrix m) {
-            return i -> m.element(m.getCols() - i % m.getCols() - 1 + i / m.getRows() * m.getRows());
-        }
-    }, HORIZONTAL {
-        @Override
-        IntToDoubleFunction getFormula(final Matrix m) {
-            return i -> m.element(m.getRows() * (m.getCols() - i / m.getRows() - 1) + i % m.getCols());
-        }
-    };
+    MAIN(size -> i -> i / size + i % size * size),
+    SIDE(size -> i -> size * (size - i % size) - i / size - 1),
+    VERTICAL(size -> i -> size - i % size - 1 + i / size * size),
+    HORIZONTAL(size -> i -> size * (size - i / size - 1) + i % size);
 
-    abstract IntToDoubleFunction getFormula(final Matrix m);
+    private final IntFunction<IntUnaryOperator> function;
+
+    Transposition(IntFunction<IntUnaryOperator> function) {
+        this.function = function;
+    }
+
+    IntToDoubleFunction getFormula(final Matrix matrix) {
+        return i -> matrix.element(function.apply(matrix.rows()).applyAsInt(i));
+    }
+
 }

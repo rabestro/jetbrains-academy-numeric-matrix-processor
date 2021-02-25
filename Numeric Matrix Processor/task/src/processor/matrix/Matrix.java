@@ -27,10 +27,10 @@ public interface Matrix {
      * @throws IllegalArgumentException if number of rows and columns are not equals
      */
     default Matrix add(final Matrix other) {
-        if (this.getRows() != other.getRows() || this.getCols() != other.getCols()) {
+        if (this.rows() != other.rows() || this.cols() != other.cols()) {
             throw EXCEPTION_NOT_EQUAL;
         }
-        return Matrix.create(getRows(), getCols(), i -> this.element(i) + other.element(i));
+        return Matrix.create(rows(), cols(), i -> this.element(i) + other.element(i));
     }
 
     /**
@@ -42,7 +42,7 @@ public interface Matrix {
      * @return a new matrix that represents multiplication of the matrix by given constant
      */
     default Matrix multiply(final double constant) {
-        return Matrix.create(getRows(), getCols(), i -> element(i) * constant);
+        return Matrix.create(rows(), cols(), i -> element(i) * constant);
     }
 
     /**
@@ -59,15 +59,15 @@ public interface Matrix {
      *                                  not equals to the number of rows for the second matrix
      */
     default Matrix multiply(final Matrix other) {
-        if (this.getCols() != other.getRows()) {
+        if (this.cols() != other.rows()) {
             throw EXCEPTION_COLS_ROWS_NOT_EQUAL;
         }
-        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.getCols()).mapToDouble(col ->
-                element(i / other.getCols() * getCols() + col)
-                        * other.element(i % other.getCols()
-                        + col * other.getCols())).sum();
+        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols()).mapToDouble(col ->
+                element(i / other.cols() * cols() + col)
+                        * other.element(i % other.cols()
+                        + col * other.cols())).sum();
 
-        return Matrix.create(this.getRows(), other.getCols(), multiplyByMatrix);
+        return Matrix.create(this.rows(), other.cols(), multiplyByMatrix);
     }
 
     /**
@@ -81,10 +81,10 @@ public interface Matrix {
      * @throws IllegalArgumentException if matrix is not a square
      */
     default Matrix transpose(final Transposition mode) {
-        if (getCols() != getRows()) {
+        if (cols() != rows()) {
             throw EXCEPTION_NOT_SQUARE;
         }
-        return Matrix.create(getRows(), getCols(), mode.getFormula(this));
+        return Matrix.create(rows(), cols(), mode.getFormula(this));
     }
 
     default Matrix transpose() {
@@ -132,14 +132,14 @@ public interface Matrix {
      *
      * @return number of rows in the matrix
      */
-    int getRows();
+    int rows();
 
     /**
      * Columns number
      *
      * @return number of columns in the matrix
      */
-    int getCols();
+    int cols();
 
     /**
      * Create and return the Matrix.
@@ -187,9 +187,9 @@ public interface Matrix {
      * @throws IndexOutOfBoundsException if parameters is out of range
      */
     default double element(final int row, final int col) {
-        Objects.checkIndex(row, getRows());
-        Objects.checkIndex(col, getCols());
-        return element(row * getCols() + col);
+        Objects.checkIndex(row, rows());
+        Objects.checkIndex(col, cols());
+        return element(row * cols() + col);
     }
 
 }

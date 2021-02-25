@@ -7,7 +7,7 @@ import java.util.function.IntToDoubleFunction;
 import static java.util.stream.IntStream.range;
 
 public interface Matrix {
-    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException("the sizes of matrices have to be equal");
+    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException("the sizes of matrices are not equal");
 
     /**
      * Matrix Addition

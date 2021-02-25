@@ -11,7 +11,7 @@ public final class MatrixImpl implements Matrix {
     private final int cols;
     private final double[] cells;
 
-    public MatrixImpl(final int rows, final int cols, final double[] cells) {
+    MatrixImpl(final int rows, final int cols, final double[] cells) {
         if (cells.length != rows * cols) {
             throw new IllegalArgumentException(
                     "the number of cells is not equals to the product of rows and columns");
@@ -38,7 +38,7 @@ public final class MatrixImpl implements Matrix {
         if (this.rows != other.getRows() || this.cols != other.getCols()) {
             throw new IllegalArgumentException("the sizes of matrices have to be equal");
         }
-        return calculate(rows, cols, i -> this.cells[i] + other.getElement(i));
+        return Matrix.create(rows, cols, i -> this.element(i) + other.element(i));
     }
 
     /**
@@ -51,7 +51,7 @@ public final class MatrixImpl implements Matrix {
      */
     @Override
     public Matrix multiply(final double constant) {
-        return calculate(rows, cols, i -> cells[i] * constant);
+        return Matrix.create(rows, cols, i -> element(i) * constant);
     }
 
     /**
@@ -76,10 +76,10 @@ public final class MatrixImpl implements Matrix {
         }
         final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols).mapToDouble(col ->
                 this.cells[i / other.getCols() * cols + col]
-                        * other.getElement(i % other.getCols()
+                        * other.element(i % other.getCols()
                         + col * other.getCols())).sum();
 
-        return calculate(this.rows, other.getCols(), multiplyByMatrix);
+        return Matrix.create(this.rows, other.getCols(), multiplyByMatrix);
     }
 
     /**
@@ -104,7 +104,7 @@ public final class MatrixImpl implements Matrix {
                 i -> cells[rows * (cols - i / rows - 1) + i % cols]
         }[mode.ordinal()];
 
-        return calculate(rows, cols, transpositionFormula);
+        return Matrix.create(rows, cols, transpositionFormula);
     }
 
     /**
@@ -156,7 +156,7 @@ public final class MatrixImpl implements Matrix {
     }
 
     @Override
-    public double getElement(final int index) {
+    public double element(final int index) {
         return cells[index];
     }
 
@@ -166,7 +166,7 @@ public final class MatrixImpl implements Matrix {
                 cells[rows * ((i / size < cell / rows ? 0 : 1) + i / size)
                         + i % size + (i % size < cell % cols ? 0 : 1)];
 
-        return calculate(size, size, calculateMinor).determinant();
+        return Matrix.create(size, size, calculateMinor).determinant();
     }
 
     private double cofactor(final int cell) {
@@ -174,17 +174,13 @@ public final class MatrixImpl implements Matrix {
     }
 
     private Matrix cofactor() {
-        return calculate(rows, cols, this::cofactor);
-    }
-
-    private Matrix calculate(int rows, int cols, final IntToDoubleFunction function) {
-        return new MatrixImpl(rows, cols, range(0, rows * cols).mapToDouble(function).toArray());
+        return Matrix.create(rows, cols, this::cofactor);
     }
 
     @Override
     public String toString() {
         return range(0, cells.length)
-                .mapToObj(i -> String.format("%9.2f%s", cells[i], (i + 1) % cols == 0 ? "\n" : " "))
+                .mapToObj(i -> String.format((i + 1) % cols == 0 ? "%9.2f%n" : "%9.2f ", cells[i]))
                 .collect(Collectors.joining());
     }
 

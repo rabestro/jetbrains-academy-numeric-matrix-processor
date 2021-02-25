@@ -1,6 +1,10 @@
 package processor.matrix;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.IntToDoubleFunction;
+
+import static java.util.stream.IntStream.range;
 
 public interface Matrix {
     /**
@@ -79,9 +83,41 @@ public interface Matrix {
      */
     Optional<Matrix> inverse();
 
+    /**
+     * Element of the matrix
+     * <p>
+     * The index of elements starts from zero like on the scheme:
+     * <p>
+     * ( 0, 1, 2 )
+     * ( 3, 4, 5 )
+     * ( 6, 7, 8 )
+     *
+     * @param index is an element's index
+     * @return an element of matrix
+     */
+    double element(final int index);
+
     int getRows();
 
     int getCols();
 
-    double getElement(final int index);
+    static Matrix create(final int rows, final int cols, final IntToDoubleFunction function) {
+        return Matrix.create(rows, cols, range(0, rows * cols).mapToDouble(function).toArray());
+    }
+
+    static Matrix create(final int rows, final int cols, final double[] elements) {
+        return new MatrixImpl(rows, cols, elements);
+    }
+
+    static Matrix createIdentityMatrix(final int size) {
+        // TODO write a function for identity matrix
+        return Matrix.create(size, size, i -> 0);
+    }
+
+    default double element(final int row, final int col) {
+        Objects.checkIndex(row, getRows());
+        Objects.checkIndex(col, getCols());
+        return element(row * getCols() + col);
+    }
+
 }

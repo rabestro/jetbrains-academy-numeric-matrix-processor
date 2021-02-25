@@ -110,8 +110,7 @@ public interface Matrix {
     }
 
     static Matrix createIdentityMatrix(final int size) {
-        // TODO write a function for identity matrix
-        return Matrix.create(size, size, i -> 0);
+        return Matrix.create(size, size, i -> i % (size + 1) == 0 ? 1 : 0);
     }
 
     default double element(final int row, final int col) {

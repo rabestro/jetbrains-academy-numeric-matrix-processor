@@ -74,17 +74,17 @@ public final class MatrixImpl implements Matrix {
         return elements[index];
     }
 
-    private double minor(final int cell) {
+    private double minor(final int index) {
         final int size = rows - 1;
         final IntToDoubleFunction calculateMinor = i ->
-                elements[rows * ((i / size < cell / rows ? 0 : 1) + i / size)
-                        + i % size + (i % size < cell % cols ? 0 : 1)];
+                elements[rows * ((i / size < index / rows ? 0 : 1) + i / size)
+                        + i % size + (i % size < index % cols ? 0 : 1)];
 
         return Matrix.create(size, size, calculateMinor).determinant();
     }
 
-    private double cofactor(final int cell) {
-        return ((cell / rows + cell % cols) % 2 == 0 ? 1 : -1) * minor(cell);
+    private double cofactor(final int index) {
+        return ((index / rows + index % cols) % 2 == 0 ? 1 : -1) * minor(index);
     }
 
     private Matrix cofactor() {

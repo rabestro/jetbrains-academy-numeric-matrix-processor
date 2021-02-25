@@ -12,7 +12,7 @@ public enum Transposition {
 
     private final IntFunction<IntUnaryOperator> function;
 
-    Transposition(IntFunction<IntUnaryOperator> function) {
+    Transposition(final IntFunction<IntUnaryOperator> function) {
         this.function = function;
     }
 

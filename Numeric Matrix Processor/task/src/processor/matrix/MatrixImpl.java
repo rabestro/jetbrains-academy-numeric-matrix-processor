@@ -9,16 +9,16 @@ import static java.util.stream.IntStream.range;
 public final class MatrixImpl implements Matrix {
     private final int rows;
     private final int cols;
-    private final double[] cells;
+    private final double[] elements;
 
-    MatrixImpl(final int rows, final int cols, final double[] cells) {
-        if (cells.length != rows * cols) {
+    MatrixImpl(final int rows, final int cols, final double[] elements) {
+        if (elements.length != rows * cols) {
             throw new IllegalArgumentException(
                     "the number of cells is not equals to the product of rows and columns");
         }
         this.rows = rows;
         this.cols = cols;
-        this.cells = cells;
+        this.elements = elements;
     }
 
     /**
@@ -75,7 +75,7 @@ public final class MatrixImpl implements Matrix {
                             + "to the number of rows for the second matrix.");
         }
         final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols).mapToDouble(col ->
-                this.cells[i / other.getCols() * cols + col]
+                element(i / other.getCols() * cols + col)
                         * other.element(i % other.getCols()
                         + col * other.getCols())).sum();
 
@@ -98,10 +98,10 @@ public final class MatrixImpl implements Matrix {
             throw new IllegalArgumentException("only square matrix can be transposed.");
         }
         final var transpositionFormula = new IntToDoubleFunction[]{
-                i -> cells[i / rows + i % cols * cols],
-                i -> cells[cols * (rows - i % cols) - i / rows - 1],
-                i -> cells[cols - i % cols - 1 + i / rows * cols],
-                i -> cells[rows * (cols - i / rows - 1) + i % cols]
+                i -> element(i / rows + i % cols * cols),
+                i -> element(cols * (rows - i % cols) - i / rows - 1),
+                i -> element(cols - i % cols - 1 + i / rows * cols),
+                i -> element(rows * (cols - i / rows - 1) + i % cols)
         }[mode.ordinal()];
 
         return Matrix.create(rows, cols, transpositionFormula);
@@ -122,12 +122,12 @@ public final class MatrixImpl implements Matrix {
             throw new IllegalArgumentException("the determinant is defined only for a square matrix.");
         }
         if (rows == 1) {
-            return cells[0];
+            return element(0);
         }
         if (rows == 2) {
-            return cells[0] * cells[3] - cells[1] * cells[2];
+            return element(0) * element(3) - element(1) * element(2);
         }
-        return range(0, rows).mapToDouble(i -> cells[i] * cofactor(i)).sum();
+        return range(0, rows).mapToDouble(i -> element(i) * cofactor(i)).sum();
     }
 
     /**
@@ -157,13 +157,13 @@ public final class MatrixImpl implements Matrix {
 
     @Override
     public double element(final int index) {
-        return cells[index];
+        return elements[index];
     }
 
     private double minor(final int cell) {
         final int size = rows - 1;
         final IntToDoubleFunction calculateMinor = i ->
-                cells[rows * ((i / size < cell / rows ? 0 : 1) + i / size)
+                elements[rows * ((i / size < cell / rows ? 0 : 1) + i / size)
                         + i % size + (i % size < cell % cols ? 0 : 1)];
 
         return Matrix.create(size, size, calculateMinor).determinant();
@@ -179,8 +179,8 @@ public final class MatrixImpl implements Matrix {
 
     @Override
     public String toString() {
-        return range(0, cells.length)
-                .mapToObj(i -> String.format((i + 1) % cols == 0 ? "%9.2f%n" : "%9.2f ", cells[i]))
+        return range(0, elements.length)
+                .mapToObj(i -> String.format((i + 1) % cols == 0 ? "%9.2f%n" : "%9.2f ", elements[i]))
                 .collect(Collectors.joining());
     }
 

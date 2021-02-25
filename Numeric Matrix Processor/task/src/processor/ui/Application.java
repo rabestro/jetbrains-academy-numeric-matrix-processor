@@ -8,6 +8,24 @@ import java.util.Scanner;
 public final class Application implements Runnable {
     private final Scanner scanner = new Scanner(System.in);
 
+    @Override
+    public void run() {
+        new Menu("Numeric Matrix Processor")
+                .add("Add matrices", this::addMatrices)
+                .add("Multiply matrix to a constant", this::multiplyByConstant)
+                .add("Multiply matrices", this::multiplyMatrices)
+                .add("Transpose matrix", new Menu("Transpose Matrix")
+                        .oneTime()
+                        .add("Main diagonal", () -> this.transpose(Transposition.MAIN))
+                        .add("Side diagonal", () -> this.transpose(Transposition.SIDE))
+                        .add("Vertical line", () -> this.transpose(Transposition.VERTICAL))
+                        .add("Horizontal line", () -> this.transpose(Transposition.HORIZONTAL))
+                )
+                .add("Calculate a determinant", this::calculateDeterminate)
+                .add("Inverse matrix", this::inverseMatrix)
+                .run();
+    }
+
     public void addMatrices() {
         final var first = readMatrix("first");
         final var second = readMatrix("second");
@@ -55,21 +73,4 @@ public final class Application implements Runnable {
         System.out.println(result);
     }
 
-    @Override
-    public void run() {
-        new Menu("Numeric Matrix Processor")
-                .add("Add matrices", this::addMatrices)
-                .add("Multiply matrix to a constant", this::multiplyByConstant)
-                .add("Multiply matrices", this::multiplyMatrices)
-                .add("Transpose matrix", new Menu("Transpose Matrix")
-                        .oneTime()
-                        .add("Main diagonal", () -> this.transpose(Transposition.MAIN))
-                        .add("Side diagonal", () -> this.transpose(Transposition.SIDE))
-                        .add("Vertical line", () -> this.transpose(Transposition.VERTICAL))
-                        .add("Horizontal line", () -> this.transpose(Transposition.HORIZONTAL))
-                )
-                .add("Calculate a determinant", this::calculateDeterminate)
-                .add("Inverse matrix", this::inverseMatrix)
-                .run();
-    }
 }

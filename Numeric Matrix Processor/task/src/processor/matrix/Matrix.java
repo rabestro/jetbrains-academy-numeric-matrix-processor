@@ -18,7 +18,12 @@ public interface Matrix {
      * @return a new matrix that represents sum of first and second matrices
      * @throws IllegalArgumentException if number of rows and columns are not equals
      */
-    Matrix add(final Matrix other);
+    default Matrix add(final Matrix other) {
+        if (this.getRows() != other.getRows() || this.getCols() != other.getCols()) {
+            throw new IllegalArgumentException("the sizes of matrices have to be equal");
+        }
+        return Matrix.create(getRows(), getCols(), i -> this.element(i) + other.element(i));
+    }
 
     /**
      * Multiplication by number
@@ -28,7 +33,9 @@ public interface Matrix {
      * @param constant for matrix multiplication by
      * @return a new matrix that represents multiplication of the matrix by given constant
      */
-    Matrix multiply(final double constant);
+    default Matrix multiply(final double constant) {
+        return Matrix.create(getRows(), getCols(), i -> element(i) * constant);
+    }
 
     /**
      * Matrix by matrix multiplication
@@ -97,22 +104,65 @@ public interface Matrix {
      */
     double element(final int index);
 
+    /**
+     * Rows number
+     *
+     * @return number of rows in the matrix
+     */
     int getRows();
 
+    /**
+     * Columns number
+     *
+     * @return number of columns in the matrix
+     */
     int getCols();
 
-    static Matrix create(final int rows, final int cols, final IntToDoubleFunction function) {
-        return Matrix.create(rows, cols, range(0, rows * cols).mapToDouble(function).toArray());
-    }
-
+    /**
+     * Create and return the Matrix.
+     *
+     * The method uses the concrete implementation of Matrix interface MatrixImpl
+     * If you need to replace the implementation then this is the only method to do this.
+     *
+     * @param rows number of rows in the Matrix
+     * @param cols number of columns in the Matrix
+     * @param elements array of elements
+     * @return Matrix with given rows, cols and elements
+     * @throws IllegalArgumentException if (rows * cols) not equals to number of elements in array
+     */
     static Matrix create(final int rows, final int cols, final double[] elements) {
         return new MatrixImpl(rows, cols, elements);
+    }
+
+    /**
+     * Create and return the Matrix.
+     * @param rows number of rows in the Matrix
+     * @param cols number of columns in the Matrix
+     * @param function to calculate elements according to an index
+     * @return Matrix with given rows, cols and function
+     */
+    static Matrix create(final int rows, final int cols, final IntToDoubleFunction function) {
+        return Matrix.create(rows, cols, range(0, rows * cols).mapToDouble(function).toArray());
     }
 
     static Matrix createIdentityMatrix(final int size) {
         return Matrix.create(size, size, i -> i % (size + 1) == 0 ? 1 : 0);
     }
 
+    /**
+     * Gets an element of the matrix by row and column
+     * <p>
+     * The row and col of elements starts from zero like on the scheme:
+     * <p>
+     * [ (0,0) (0,1) (0,2) ]
+     * [ (1,0) (1,1) (1,2) ]
+     * [ (2,0) (2,1) (2,2) ]
+     *
+     * @param row is a row where the element is located
+     * @param col is a column where the element is located
+     * @return an element of matrix
+     * @throws IndexOutOfBoundsException
+     */
     default double element(final int row, final int col) {
         Objects.checkIndex(row, getRows());
         Objects.checkIndex(col, getCols());

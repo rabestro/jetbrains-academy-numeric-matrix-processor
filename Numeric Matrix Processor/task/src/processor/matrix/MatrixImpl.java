@@ -22,39 +22,6 @@ public final class MatrixImpl implements Matrix {
     }
 
     /**
-     * Matrix Addition
-     * <p>
-     * Two matrices must have an equal number of rows and columns to be added.
-     * The sum of two matrices A and B will be a matrix which has the same
-     * number of rows and columns as do A and B.
-     *
-     * @param other matrix to be add
-     * @return a new matrix that represents sum of first and second matrices
-     * @throws IllegalArgumentException if number of rows and columns are not equals
-     */
-
-    @Override
-    public Matrix add(final Matrix other) {
-        if (this.rows != other.getRows() || this.cols != other.getCols()) {
-            throw new IllegalArgumentException("the sizes of matrices have to be equal");
-        }
-        return Matrix.create(rows, cols, i -> this.element(i) + other.element(i));
-    }
-
-    /**
-     * Multiplication by number
-     * <p>
-     * Multiply every element of the matrix by a constant.
-     *
-     * @param constant for matrix multiplication by
-     * @return a new matrix that represents multiplication of the matrix by given constant
-     */
-    @Override
-    public Matrix multiply(final double constant) {
-        return Matrix.create(rows, cols, i -> element(i) * constant);
-    }
-
-    /**
      * Matrix by matrix multiplication
      * <p>
      * Matrix multiplication is a binary operation that produces a matrix from two matrices.

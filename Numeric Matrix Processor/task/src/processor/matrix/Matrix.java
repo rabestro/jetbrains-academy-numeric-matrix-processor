@@ -7,7 +7,13 @@ import java.util.function.IntToDoubleFunction;
 import static java.util.stream.IntStream.range;
 
 public interface Matrix {
-    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException("the sizes of matrices are not equal");
+    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException(
+            "the sizes of matrices are not equal");
+    RuntimeException EXCEPTION_NOT_SQUARE = new IllegalArgumentException(
+            "the matrix is not square and can't be transposed");
+    RuntimeException EXCEPTION_COLS_ROWS_NOT_EQUAL = new IllegalArgumentException(
+            "the number of columns for the first matrix should be equal "
+                    + "to the number of rows for the second matrix");
 
     /**
      * Matrix Addition
@@ -52,7 +58,17 @@ public interface Matrix {
      * @throws IllegalArgumentException in case if number of rows for the first matrix is
      *                                  not equals to the number of rows for the second matrix
      */
-    Matrix multiply(final Matrix other);
+    default Matrix multiply(final Matrix other) {
+        if (this.getCols() != other.getRows()) {
+            throw EXCEPTION_COLS_ROWS_NOT_EQUAL;
+        }
+        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.getCols()).mapToDouble(col ->
+                element(i / other.getCols() * getCols() + col)
+                        * other.element(i % other.getCols()
+                        + col * other.getCols())).sum();
+
+        return Matrix.create(this.getRows(), other.getCols(), multiplyByMatrix);
+    }
 
     /**
      * Matrix Transposition
@@ -64,10 +80,15 @@ public interface Matrix {
      * @return a new transposed matrix
      * @throws IllegalArgumentException if matrix is not a square
      */
-    Matrix transpose(final Transposition mode);
+    default Matrix transpose(final Transposition mode) {
+        if (getCols() != getRows()) {
+            throw EXCEPTION_NOT_SQUARE;
+        }
+        return Matrix.create(getRows(), getCols(), mode.getFormula(this));
+    }
 
     default Matrix transpose() {
-        return this.transpose(Transposition.MAIN);
+        return transpose(Transposition.MAIN);
     }
 
     /**
@@ -163,7 +184,7 @@ public interface Matrix {
      * @param row is a row where the element is located
      * @param col is a column where the element is located
      * @return an element of matrix
-     * @throws IndexOutOfBoundsException
+     * @throws IndexOutOfBoundsException if parameters is out of range
      */
     default double element(final int row, final int col) {
         Objects.checkIndex(row, getRows());

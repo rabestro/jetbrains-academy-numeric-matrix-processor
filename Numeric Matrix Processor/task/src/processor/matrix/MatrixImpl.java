@@ -22,59 +22,6 @@ public final class MatrixImpl implements Matrix {
     }
 
     /**
-     * Matrix by matrix multiplication
-     * <p>
-     * Matrix multiplication is a binary operation that produces a matrix from two matrices.
-     * For matrix multiplication, the number of columns in the first matrix must be equal to
-     * the number of rows in the second matrix. The result matrix, known as the matrix product,
-     * has the number of rows of the first and the number of columns of the second matrix.
-     *
-     * @param other matrix
-     * @return the matrix product
-     * @throws IllegalArgumentException in case if number of rows for the first matrix is
-     *                                  not equals to the number of rows for the second matrix
-     */
-    @Override
-    public Matrix multiply(final Matrix other) {
-        if (this.cols != other.getRows()) {
-            throw new IllegalArgumentException(
-                    "the number of columns for the first matrix should be equal "
-                            + "to the number of rows for the second matrix.");
-        }
-        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols).mapToDouble(col ->
-                element(i / other.getCols() * cols + col)
-                        * other.element(i % other.getCols()
-                        + col * other.getCols())).sum();
-
-        return Matrix.create(this.rows, other.getCols(), multiplyByMatrix);
-    }
-
-    /**
-     * Matrix Transposition
-     * <p>
-     * Matrix transposition is an operation in linear algebra that exchanges
-     * matrix rows on matrix columns and returns a new matrix as a result.
-     *
-     * @param mode is transposition type
-     * @return a new transposed matrix
-     * @throws IllegalArgumentException if matrix is not a square
-     */
-    @Override
-    public Matrix transpose(final Transposition mode) {
-        if (cols != rows) {
-            throw new IllegalArgumentException("only square matrix can be transposed.");
-        }
-        final var transpositionFormula = new IntToDoubleFunction[]{
-                i -> element(i / rows + i % cols * cols),
-                i -> element(cols * (rows - i % cols) - i / rows - 1),
-                i -> element(cols - i % cols - 1 + i / rows * cols),
-                i -> element(rows * (cols - i / rows - 1) + i % cols)
-        }[mode.ordinal()];
-
-        return Matrix.create(rows, cols, transpositionFormula);
-    }
-
-    /**
      * Determinant of the matrix
      * <p>
      * The determinant is a scalar value that can be computed from the elements of a square matrix

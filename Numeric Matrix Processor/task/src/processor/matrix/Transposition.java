@@ -5,10 +5,10 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.IntUnaryOperator;
 
 public enum Transposition {
-    MAIN(size -> i -> i / size + i % size * size),
-    SIDE(size -> i -> size * (size - i % size) - i / size - 1),
-    VERTICAL(size -> i -> size - i % size - 1 + i / size * size),
-    HORIZONTAL(size -> i -> size * (size - i / size - 1) + i % size);
+    MAIN_DIAGONAL(size -> i -> i / size + i % size * size),
+    SIDE_DIAGONAL(size -> i -> size * (size - i % size) - i / size - 1),
+    VERTICAL_AXIS(size -> i -> size - i % size - 1 + i / size * size),
+    HORIZONTAL_AXIS(size -> i -> size * (size - i / size - 1) + i % size);
 
     private final IntFunction<IntUnaryOperator> function;
 

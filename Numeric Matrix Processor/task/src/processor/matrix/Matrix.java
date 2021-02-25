@@ -7,14 +7,6 @@ import java.util.function.IntToDoubleFunction;
 import static java.util.stream.IntStream.range;
 
 public interface Matrix {
-    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException(
-            "the sizes of matrices are not equal");
-    RuntimeException EXCEPTION_NOT_SQUARE = new IllegalArgumentException(
-            "the matrix is not square and can't be transposed");
-    RuntimeException EXCEPTION_COLS_ROWS_NOT_EQUAL = new IllegalArgumentException(
-            "the number of columns for the first matrix should be equal "
-                    + "to the number of rows for the second matrix");
-
     /**
      * Matrix Addition
      * <p>
@@ -27,10 +19,14 @@ public interface Matrix {
      * @throws IllegalArgumentException if number of rows and columns are not equals
      */
     default Matrix add(final Matrix other) {
-        if (this.rows() != other.rows() || this.cols() != other.cols()) {
-            throw EXCEPTION_NOT_EQUAL;
-        }
+        requireSizeEquals(other);
         return Matrix.create(rows(), cols(), i -> this.element(i) + other.element(i));
+    }
+
+    private void requireSizeEquals(final Matrix other) {
+        if (this.rows() != other.rows() || this.cols() != other.cols()) {
+            throw new IllegalArgumentException("the sizes of matrices are not equal");
+        }
     }
 
     /**
@@ -59,15 +55,19 @@ public interface Matrix {
      *                                  not equals to the number of rows for the second matrix
      */
     default Matrix multiply(final Matrix other) {
-        if (this.cols() != other.rows()) {
-            throw EXCEPTION_COLS_ROWS_NOT_EQUAL;
-        }
+        requireColsEqualRows(other);
         final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols()).mapToDouble(col ->
                 element(i / other.cols() * cols() + col)
                         * other.element(i % other.cols()
                         + col * other.cols())).sum();
 
         return Matrix.create(this.rows(), other.cols(), multiplyByMatrix);
+    }
+
+    private void requireColsEqualRows(final Matrix other) {
+        if (this.cols() != other.rows()) {
+            throw new IllegalArgumentException("the matrix is not square and can't be transposed");
+        }
     }
 
     /**
@@ -81,14 +81,18 @@ public interface Matrix {
      * @throws IllegalArgumentException if matrix is not a square
      */
     default Matrix transpose(final Transposition mode) {
-        if (cols() != rows()) {
-            throw EXCEPTION_NOT_SQUARE;
-        }
+        requireSquareMatrix();
         return Matrix.create(rows(), cols(), mode.getFormula(this));
     }
 
+    private void requireSquareMatrix() {
+        if (cols() != rows()) {
+            throw new IllegalArgumentException("the matrix is not square and can't be transposed");
+        }
+    }
+
     default Matrix transpose() {
-        return transpose(Transposition.MAIN);
+        return transpose(Transposition.MAIN_DIAGONAL);
     }
 
     /**

@@ -7,6 +7,8 @@ import java.util.function.IntToDoubleFunction;
 import static java.util.stream.IntStream.range;
 
 public interface Matrix {
+    RuntimeException EXCEPTION_NOT_EQUAL = new IllegalArgumentException("the sizes of matrices have to be equal");
+
     /**
      * Matrix Addition
      * <p>
@@ -20,7 +22,7 @@ public interface Matrix {
      */
     default Matrix add(final Matrix other) {
         if (this.getRows() != other.getRows() || this.getCols() != other.getCols()) {
-            throw new IllegalArgumentException("the sizes of matrices have to be equal");
+            throw EXCEPTION_NOT_EQUAL;
         }
         return Matrix.create(getRows(), getCols(), i -> this.element(i) + other.element(i));
     }

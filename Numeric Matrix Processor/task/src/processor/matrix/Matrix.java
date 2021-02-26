@@ -106,10 +106,9 @@ public interface Matrix {
      */
     default Matrix multiply(final Matrix other) {
         requireColsEqualRows(other);
-        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols()).mapToDouble(col ->
-                element(i / other.cols() * cols() + col)
-                        * other.element(i % other.cols()
-                        + col * other.cols())).sum();
+        final IntToDoubleFunction multiplyByMatrix = i -> range(0, this.cols())
+                .mapToDouble(col -> element(i / other.cols() * cols() + col)
+                        * other.element(i % other.cols() + col * other.cols())).sum();
 
         return Matrix.create(this.rows(), other.cols(), multiplyByMatrix);
     }

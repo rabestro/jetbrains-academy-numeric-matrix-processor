@@ -159,9 +159,6 @@ public interface Matrix {
         if (rows() == 1) {
             return element(0);
         }
-        if (rows() == 2) {
-            return element(0) * element(3) - element(1) * element(2);
-        }
         return range(0, rows()).mapToDouble(i -> element(i) * cofactor(i)).sum();
     }
 
@@ -209,6 +206,12 @@ public interface Matrix {
         return Matrix.create(rows, cols, range(0, rows * cols).mapToDouble(function).toArray());
     }
 
+    /**
+     * Create and return the Identity Matrix.
+     *
+     * @param size number of rows and columns in the Matrix
+     * @return Identity Matrix with given size
+     */
     static Matrix createIdentityMatrix(final int size) {
         return Matrix.create(size, size, i -> i % (size + 1) == 0 ? 1 : 0);
     }
@@ -218,8 +221,8 @@ public interface Matrix {
      * <p>
      * The method creates the concrete implementation of Matrix interface.
      *
-     * @param rows     number of rows in the Matrix
-     * @param cols     number of columns in the Matrix
+     * @param rows     number of rows
+     * @param cols     number of columns
      * @param elements array of elements
      * @return Matrix with given rows, cols and elements
      * @throws IllegalArgumentException if (rows * cols) not equals to number of elements in array

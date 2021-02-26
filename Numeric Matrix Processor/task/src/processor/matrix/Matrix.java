@@ -199,6 +199,7 @@ public interface Matrix {
 
     /**
      * Create and return the Matrix.
+     *
      * @param rows number of rows in the Matrix
      * @param cols number of columns in the Matrix
      * @param function to calculate elements according to an index
@@ -215,8 +216,7 @@ public interface Matrix {
     /**
      * Create and return the Matrix.
      * <p>
-     * The method uses the concrete implementation of Matrix interface MatrixImpl
-     * If you need to replace the implementation then this is the only method to do this.
+     * The method creates the concrete implementation of Matrix interface.
      *
      * @param rows     number of rows in the Matrix
      * @param cols     number of columns in the Matrix

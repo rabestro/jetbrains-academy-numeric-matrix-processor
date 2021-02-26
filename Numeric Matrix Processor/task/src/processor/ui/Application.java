@@ -26,36 +26,36 @@ public final class Application implements Runnable {
                 .run();
     }
 
-    public void addMatrices() {
+    private void addMatrices() {
         final var first = readMatrix("first");
         final var second = readMatrix("second");
         print(first.add(second));
     }
 
-    public void multiplyByConstant() {
+    private void multiplyByConstant() {
         final var matrix = readMatrix("the");
         System.out.println("Enter constant:");
         final var constant = scanner.nextDouble();
         print(matrix.multiply(constant));
     }
 
-    public void multiplyMatrices() {
+    private void multiplyMatrices() {
         final var first = readMatrix("first");
         final var second = readMatrix("second");
         print(first.multiply(second));
     }
 
-    public void transpose(final Transposition mode) {
+    private void transpose(final Transposition mode) {
         final var matrix = readMatrix("the");
         print(matrix.transpose(mode));
     }
 
-    public void calculateDeterminate() {
+    private void calculateDeterminate() {
         final var matrix = readMatrix("the");
         print(matrix.determinant());
     }
 
-    public void inverseMatrix() {
+    private void inverseMatrix() {
         final var matrix = readMatrix("the");
         print(matrix.inverse().orElseThrow());
     }

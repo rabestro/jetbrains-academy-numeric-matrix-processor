@@ -3,10 +3,60 @@ package processor.matrix;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.IntToDoubleFunction;
+import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
 
 public interface Matrix {
+
+    /**
+     * Gets an element of the matrix by index
+     * <p>
+     * The index of elements starts from zero like on the scheme:
+     * <p>
+     * ( 0, 1, 2 )
+     * ( 3, 4, 5 )
+     * ( 6, 7, 8 )
+     *
+     * @param index is an element's index
+     * @return an element of matrix
+     */
+    double element(final int index);
+
+    /**
+     * Gets an element of the matrix by row and column
+     * <p>
+     * The row and col of elements starts from zero like on the scheme:
+     * <p>
+     * [ (0,0) (0,1) (0,2) ]
+     * [ (1,0) (1,1) (1,2) ]
+     * [ (2,0) (2,1) (2,2) ]
+     *
+     * @param row is a row where the element is located
+     * @param col is a column where the element is located
+     * @return an element of matrix
+     * @throws IndexOutOfBoundsException if parameters is out of range
+     */
+    default double element(final int row, final int col) {
+        Objects.checkIndex(row, rows());
+        Objects.checkIndex(col, cols());
+        return element(row * cols() + col);
+    }
+
+    /**
+     * Rows number
+     *
+     * @return number of rows in the matrix
+     */
+    int rows();
+
+    /**
+     * Columns number
+     *
+     * @return number of columns in the matrix
+     */
+    int cols();
+
     /**
      * Matrix Addition
      * <p>
@@ -87,7 +137,7 @@ public interface Matrix {
 
     private void requireSquareMatrix() {
         if (cols() != rows()) {
-            throw new IllegalArgumentException("the matrix is not square and can't be transposed");
+            throw new IllegalArgumentException("the square matrix is required for the operation");
         }
     }
 
@@ -104,7 +154,33 @@ public interface Matrix {
      * @return the determinant of the matrix
      * @throws IllegalArgumentException if matrix is not a square
      */
-    double determinant();
+    default double determinant() {
+        requireSquareMatrix();
+        if (rows() == 1) {
+            return element(0);
+        }
+        if (rows() == 2) {
+            return element(0) * element(3) - element(1) * element(2);
+        }
+        return range(0, rows()).mapToDouble(i -> element(i) * cofactor(i)).sum();
+    }
+
+    private double minor(final int index) {
+        final int size = rows() - 1;
+        final IntToDoubleFunction calculateMinor = i ->
+                element(rows() * ((i / size < index / rows() ? 0 : 1) + i / size)
+                        + i % size + (i % size < index % cols() ? 0 : 1));
+
+        return Matrix.create(size, size, calculateMinor).determinant();
+    }
+
+    private double cofactor(final int index) {
+        return ((index / rows() + index % cols()) % 2 == 0 ? 1 : -1) * minor(index);
+    }
+
+    private Matrix cofactor() {
+        return Matrix.create(rows(), cols(), this::cofactor);
+    }
 
     /**
      * Inverse matrix
@@ -115,51 +191,11 @@ public interface Matrix {
      *
      * @return an optional of matrix that represents inverse matrix if det(A) not equals zero.
      */
-    Optional<Matrix> inverse();
-
-    /**
-     * Element of the matrix
-     * <p>
-     * The index of elements starts from zero like on the scheme:
-     * <p>
-     * ( 0, 1, 2 )
-     * ( 3, 4, 5 )
-     * ( 6, 7, 8 )
-     *
-     * @param index is an element's index
-     * @return an element of matrix
-     */
-    double element(final int index);
-
-    /**
-     * Rows number
-     *
-     * @return number of rows in the matrix
-     */
-    int rows();
-
-    /**
-     * Columns number
-     *
-     * @return number of columns in the matrix
-     */
-    int cols();
-
-    /**
-     * Create and return the Matrix.
-     *
-     * The method uses the concrete implementation of Matrix interface MatrixImpl
-     * If you need to replace the implementation then this is the only method to do this.
-     *
-     * @param rows number of rows in the Matrix
-     * @param cols number of columns in the Matrix
-     * @param elements array of elements
-     * @return Matrix with given rows, cols and elements
-     * @throws IllegalArgumentException if (rows * cols) not equals to number of elements in array
-     */
-    static Matrix create(final int rows, final int cols, final double[] elements) {
-        return new MatrixImpl(rows, cols, elements);
+    default Optional<Matrix> inverse() {
+        final double det = determinant();
+        return det == 0.0 ? Optional.empty() : Optional.of(this.cofactor().transpose().multiply(1 / det));
     }
+
 
     /**
      * Create and return the Matrix.
@@ -177,23 +213,49 @@ public interface Matrix {
     }
 
     /**
-     * Gets an element of the matrix by row and column
+     * Create and return the Matrix.
      * <p>
-     * The row and col of elements starts from zero like on the scheme:
-     * <p>
-     * [ (0,0) (0,1) (0,2) ]
-     * [ (1,0) (1,1) (1,2) ]
-     * [ (2,0) (2,1) (2,2) ]
+     * The method uses the concrete implementation of Matrix interface MatrixImpl
+     * If you need to replace the implementation then this is the only method to do this.
      *
-     * @param row is a row where the element is located
-     * @param col is a column where the element is located
-     * @return an element of matrix
-     * @throws IndexOutOfBoundsException if parameters is out of range
+     * @param rows     number of rows in the Matrix
+     * @param cols     number of columns in the Matrix
+     * @param elements array of elements
+     * @return Matrix with given rows, cols and elements
+     * @throws IllegalArgumentException if (rows * cols) not equals to number of elements in array
      */
-    default double element(final int row, final int col) {
-        Objects.checkIndex(row, rows());
-        Objects.checkIndex(col, cols());
-        return element(row * cols() + col);
+    static Matrix create(final int rows, final int cols, final double[] elements) {
+        requireEquals(elements.length, rows * cols);
+        return new Matrix() {
+
+            @Override
+            public double element(int index) {
+                return elements[index];
+            }
+
+            @Override
+            public int rows() {
+                return rows;
+            }
+
+            @Override
+            public int cols() {
+                return cols;
+            }
+
+            @Override
+            public String toString() {
+                return range(0, elements.length)
+                        .mapToObj(i -> String.format((i + 1) % cols == 0 ? "%9.2f%n" : "%9.2f ", elements[i]))
+                        .collect(Collectors.joining());
+            }
+        };
     }
 
+    private static void requireEquals(final int cells, final int product) {
+        if (cells != product) {
+            throw new IllegalArgumentException(
+                    "the number of cells is not equals to the product of rows and columns");
+        }
+    }
 }

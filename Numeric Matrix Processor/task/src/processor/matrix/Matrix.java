@@ -73,12 +73,6 @@ public interface Matrix {
         return Matrix.create(rows(), cols(), i -> this.element(i) + other.element(i));
     }
 
-    private void requireSizeEquals(final Matrix other) {
-        if (this.rows() != other.rows() || this.cols() != other.cols()) {
-            throw new IllegalArgumentException("the sizes of matrices are not equal");
-        }
-    }
-
     /**
      * Multiplication by number
      * <p>
@@ -113,12 +107,6 @@ public interface Matrix {
         return Matrix.create(this.rows(), other.cols(), multiplyByMatrix);
     }
 
-    private void requireColsEqualRows(final Matrix other) {
-        if (this.cols() != other.rows()) {
-            throw new IllegalArgumentException("the matrix is not square and can't be transposed");
-        }
-    }
-
     /**
      * Matrix Transposition
      * <p>
@@ -132,12 +120,6 @@ public interface Matrix {
     default Matrix transpose(final Transposition mode) {
         requireSquareMatrix();
         return Matrix.create(rows(), cols(), mode.getFormula(this));
-    }
-
-    private void requireSquareMatrix() {
-        if (cols() != rows()) {
-            throw new IllegalArgumentException("the square matrix is required for the operation");
-        }
     }
 
     default Matrix transpose() {
@@ -260,4 +242,23 @@ public interface Matrix {
                     "the number of cells is not equals to the product of rows and columns");
         }
     }
+
+    private void requireSizeEquals(final Matrix other) {
+        if (this.rows() != other.rows() || this.cols() != other.cols()) {
+            throw new IllegalArgumentException("the sizes of matrices are not equal");
+        }
+    }
+
+    private void requireSquareMatrix() {
+        if (cols() != rows()) {
+            throw new IllegalArgumentException("the square matrix is required for the operation");
+        }
+    }
+
+    private void requireColsEqualRows(final Matrix other) {
+        if (this.cols() != other.rows()) {
+            throw new IllegalArgumentException("the matrix is not square and can't be transposed");
+        }
+    }
+
 }

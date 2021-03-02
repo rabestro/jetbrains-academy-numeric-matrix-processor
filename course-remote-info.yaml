@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/210082/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Fri, 26 Feb 2021 19:52:20 UTC
+update_date: Tue, 02 Mar 2021 16:37:36 UTC
 stages:
 - id: 323
   step: 5465
@@ -45,10 +45,10 @@ topics:
     theory_id: 3518
   - title: Comments
     theory_id: 3520
-  - title: Naming variables
-    theory_id: 3513
   - title: Coding style conventions
     theory_id: 12411
+  - title: Naming variables
+    theory_id: 3513
   - title: Scanning the input
     theory_id: 9055
   - title: Arithmetic operations
@@ -83,7 +83,7 @@ topics:
     theory_id: 3511
   - title: Iterating over arrays
     theory_id: 3602
-  - title: Multi-dimensional array
+  - title: Multidimensional array
     theory_id: 1933
   2:
   - title: Matrix Multiplication
@@ -105,12 +105,14 @@ topics:
   - title: EduTools
     theory_id: 5839
   3:
-  - title: Write, compile, and run
-    theory_id: 3739
+  - title: Introduction to Scala
+    theory_id: 8945
   - title: Introduction to OOP
     theory_id: 3614
   - title: Characters
     theory_id: 3514
+  - title: Introduction to Kotlin
+    theory_id: 4350
   - title: The main method
     theory_id: 3489
   - title: Functional decomposition
@@ -119,20 +121,22 @@ topics:
     theory_id: 3523
   - title: Final variables
     theory_id: 7427
+  - title: Write, compile, and run
+    theory_id: 3739
   - title: Defining classes
     theory_id: 3618
-  - title: Package
-    theory_id: 3621
   - title: Constructor
     theory_id: 3535
-  - title: Objects
-    theory_id: 4727
   - title: Instance methods
     theory_id: 3495
+  - title: Package
+    theory_id: 3621
   - title: Access modifiers
     theory_id: 3589
   - title: Getters and setters
     theory_id: 3599
+  - title: Objects
+    theory_id: 4727
   - title: Static members
     theory_id: 3534
   - title: Initialization blocks
@@ -150,10 +154,10 @@ topics:
     theory_id: 5161
   - title: Stack
     theory_id: 5252
-  - title: Call stack
-    theory_id: 5135
   - title: Recursion basics
     theory_id: 5984
+  - title: Call stack
+    theory_id: 5135
   - title: Recursion
     theory_id: 3550
   5:

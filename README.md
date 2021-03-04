@@ -2,7 +2,7 @@
 
 ## About
 
-The solution for the project is in [src](Numeric Matrix Processor/task/src/processor/). The integration tests are proveded by Hyperskill. 
+The solution for the project is in [src](/Numeric Matrix Processor/task/src/processor/). The integration tests are proveded by Hyperskill. 
 
 ## Project description
 

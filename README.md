@@ -2,7 +2,7 @@
 
 ## About
 
-The solution for the project is in [src](https://github.com/rabestro/jetbrains-academy-numeric-matrix-processor/tree/master/Numeric%20Matrix%20Processor/task/src). The integration tests are proveded by Hyperskill. 
+The solution for the project is in [src](Numeric%20Matrix%20Processor/task/src). The integration tests are proveded by Hyperskill. 
 
 ## Project description
 
